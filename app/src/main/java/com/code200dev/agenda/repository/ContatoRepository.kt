@@ -1,11 +1,10 @@
 package com.code200dev.agenda.repository
 
 import android.content.Context
+import android.util.Log
 import com.code200dev.agenda.db.database
 import com.code200dev.agenda.model.Contato
-import org.jetbrains.anko.db.MapRowParser
-import org.jetbrains.anko.db.delete
-import org.jetbrains.anko.db.select
+import org.jetbrains.anko.db.*
 
 class ContatoRepository(val context: Context) {
 
@@ -100,7 +99,7 @@ class ContatoRepository(val context: Context) {
                 "site" to contato.site)
                 .whereArgs("id = {id}","id" to contato.id).exec()
 
-        Timber.d("Update result code is $updateResult")
+        Log.d("UPDATE", "Update result code is $updateResult")
     }
 
 
@@ -109,8 +108,14 @@ class ContatoRepository(val context: Context) {
     }
 
     fun isContato(telefone: String) : Boolean = context.database.use {
+        var fone = telefone.replace("+","", true)
+        fone.replace("(", "", true)
+        fone.replace(")", "", true)
+        fone.replace("-", "", true)
+        fone.replace(" ", "", true)
+
         select(CONTATOS_TABLE_NAME, "count(*) as total")
-                .whereArgs("telefone = {telefone}","telefone" to telefone)
+                .whereArgs("telefone LIKE {telefone}","telefone" to fone)
                 .parseSingle(object: MapRowParser<Boolean> {
                     override fun parseRow(columns: Map<String, Any?>): Boolean {
                         val total = columns.getValue("total")

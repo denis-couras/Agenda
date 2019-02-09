@@ -1,5 +1,6 @@
 package com.code200dev.agenda
 
+import Constants.dateFormatter
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -8,17 +9,14 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log
 import android.view.View
 import android.widget.*
 import com.code200dev.agenda.model.Contato
+import com.code200dev.agenda.repository.ContatoRepository
 
-import kotlinx.android.synthetic.main.activity_contato.*
-import kotlinx.android.synthetic.main.activity_lista_contatos.*
 import kotlinx.android.synthetic.main.content_contato.*
-import kotlinx.android.synthetic.main.content_lista_contatos.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,13 +30,13 @@ class ContatoActivity : AppCompatActivity() {
     var datanascimento: Button? = null
     private var contato: Contato? = null
 
-    private var imgContato: ImageView? = null
-    private var txtNome: EditText? = null
-    private var txtEndereco: EditText? = null
-    private var txtTelefone: EditText? = null
-    private var txtSite: EditText? = null
-    private var btnCadastro: Button? = null
-    private var txtEmail: EditText? = null
+//    private var imgContato: ImageView? = null
+//    private var txtNome: EditText? = null
+//    private var txtEndereco: EditText? = null
+//    private var txtTelefone: EditText? = null
+//    private var txtSite: EditText? = null
+////    private var btnCadastro: Button? = null
+//    private var txtEmail: EditText? = null
     private var mCurrentPhotoPath: String? = null
 
     private val localArquivoFoto: String? = null
@@ -76,7 +74,7 @@ class ContatoActivity : AppCompatActivity() {
             }
         })
 
-        btnCadastro?.setOnClickListener {
+        btnCadastro.setOnClickListener {
             contato?.foto = mCurrentPhotoPath
             contato?.nome = txtNome?.text.toString()
             contato?.endereco = txtEndereco?.text.toString()
@@ -85,7 +83,7 @@ class ContatoActivity : AppCompatActivity() {
             contato?.email = txtEmail?.text.toString()
             contato?.site = txtSite?.text.toString()
 
-            if(contato?.id == 0){
+            if(contato?.id == 0L){
                 ContatoRepository(this).create(contato!!)
             }else{
                 ContatoRepository(this).update(contato!!)
@@ -96,22 +94,14 @@ class ContatoActivity : AppCompatActivity() {
         imgContato.setOnClickListener{
             dispatchTakePictureIntentSimple();
         }
-
-        imgContato = imgContato
-        txtNome = txtNome
-        txtEndereco = txtEndereco
-        txtTelefone = txtTelefone
-        txtSite = txtSite
-        txtEmail = txtEmail
-        btnCadastro = btnCadastro
-
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val extras = data.extras
+            val extras = data!!.extras
             val imageBitmap = extras!!.get("data") as Bitmap
-            imgContato.setImageBitmap(imageBitmap)
+            imgContato?.setImageBitmap(imageBitmap)
 
             try {
                 this.storeImage(imageBitmap)
@@ -122,6 +112,21 @@ class ContatoActivity : AppCompatActivity() {
         }
     }
 
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+//            val extras = data.extras
+//            val imageBitmap = extras!!.get("data") as Bitmap
+//            imgContato!!.setImageBitmap(imageBitmap)
+//
+//            try {
+//                this.storeImage(imageBitmap)
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+//
+//        }
+//    }
+
     override fun onResume() {
         super.onResume()
         val intent = intent
@@ -130,7 +135,7 @@ class ContatoActivity : AppCompatActivity() {
                 contato = intent.getSerializableExtra("contato") as Contato
                 txtNome?.setText(contato?.nome)
                 txtEndereco?.setText(contato?.endereco)
-                txtTelefone.setText(contato?.telefone.toString())
+                txtTelefone!!.setText(contato?.telefone.toString())
 
                 if (contato?.dataNascimento != null) {
                     datanascimento?.setText(dateFormatter?.format(Date(contato?.dataNascimento!!)))
@@ -142,7 +147,7 @@ class ContatoActivity : AppCompatActivity() {
                     readBitmapFile(contato?.foto!!);
                 }
 
-                txtEmail.setText(contato?.email)
+                txtEmail!!.setText(contato?.email)
                 txtSite?.setText(contato?.site)
             }else{
                 contato = Contato()
@@ -175,7 +180,7 @@ class ContatoActivity : AppCompatActivity() {
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         }
-        imgContato.setImageBitmap(bitmap)
+        imgContato!!.setImageBitmap(bitmap)
     }
 
 

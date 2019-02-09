@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Agenda</string>
-    <string name="title_activity_lista_contatos">ListaContatosActivity</string>
-    <string name="title_activity_contato">ContatoActivity</string>
+    <string name="title_activity_lista_contatos">Contatos</string>
+    <string name="title_activity_contato">Contato</string>
+
+    <string name="title_activity_splash_screen">Agenda</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

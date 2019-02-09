@@ -6,6 +6,8 @@ import org.jetbrains.anko.db.*
 import org.jetbrains.anko.db.ManagedSQLiteOpenHelper
 import org.jetbrains.anko.db.createTable
 
+import Constants.CONTATOS_TABLE_NAME
+
 class BancoDadosHelper(context: Context) :
         ManagedSQLiteOpenHelper(ctx = context ,
                 name = "agenda.db",  version = 1) {

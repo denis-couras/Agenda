@@ -23,15 +23,11 @@ const val SMS_BUNDLE = "pdus"
 
 class SMSReceiver : BroadcastReceiver() {
 
-    val MY_PERMISSIONS_REQUEST_SMS_RECEIVE = 10
+
 
     @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceive(context: Context, intent: Intent) {
-
-        setupPermissions()
-        configureReceiver()
-
 
         val intentExtras = intent.extras
         val subId = intentExtras.getInt("subscription", -1)
@@ -42,42 +38,20 @@ class SMSReceiver : BroadcastReceiver() {
             val format = intentExtras.getString("format")
             smsMessage = SmsMessage.createFromPdu( sms[i] as ByteArray, format )
         }
+
+        Log.d("SMS ADDRESS", smsMessage?.originatingAddress.toString())
+
         if(ContatoRepository(context).isContato(smsMessage?.originatingAddress.toString())){
+
             val mp = MediaPlayer.create(context, R.raw.evil_morty)
             mp.start()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == MY_PERMISSIONS_REQUEST_SMS_RECEIVE) {
-            Logger.getLogger(SmsMessage::class.java.name).warning("Permission RECEIVE SMS")
-        }
-    }
 
-    private fun configureReceiver() {
-        val filter = IntentFilter()
-        filter.addAction("com.code200dev.agenda.services.SMSreceiver")
-        filter.addAction("android.provider.Telephony.SMS_RECEIVED")
-        receiver = SMSReceiver()
-        registerReceiver(receiver, filter)
-    }
 
-    private fun setupPermissions() {
 
-        val list = listOf<String>(
-                Manifest.permission.RECEIVE_SMS
-        )
 
-        ActivityCompat.requestPermissions(this,
-                list.toTypedArray(), MY_PERMISSIONS_REQUEST_SMS_RECEIVE);
 
-        val permission = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_SMS)
-
-        if (permission != PackageManager.GET_SERVICES) {
-            Log.i("aula", "Permission to record denied")
-        }
-    }
 
 }

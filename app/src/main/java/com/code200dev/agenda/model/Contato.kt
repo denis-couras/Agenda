@@ -3,7 +3,7 @@ package com.code200dev.agenda.model
 import java.io.Serializable
 
 data class Contato(
-        var id: Int = 0,
+        var id: Long = 0,
         var foto: String? = null,
         var nome: String? = null,
         var endereco: String? = null,
