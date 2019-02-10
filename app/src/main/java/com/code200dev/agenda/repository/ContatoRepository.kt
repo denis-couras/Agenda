@@ -104,7 +104,8 @@ class ContatoRepository(val context: Context) {
 
 
     fun delete(id: Long) = context.database.use {
-        delete(CONTATOS_TABLE_NAME, whereClause = "id = {contatoId}", args = "contatoId" to id)
+        delete(CONTATOS_TABLE_NAME, "id = {contatoId}", "contatoId" to id)
+
     }
 
     fun isContato(telefone: String) : Boolean = context.database.use {
